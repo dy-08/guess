@@ -293,9 +293,12 @@
         <script>
             const imgs = document.querySelectorAll('.imgs');
             let count = 0;
+            let page = document.querySelector('.page');
+
             function show() {
                 imgs.forEach((item) => item.classList.remove('on'));
                 imgs[count].classList.add('on');
+                page.innerText = `${count + 1}/${imgs.length}`;
             }
 
             function prevImg() {
