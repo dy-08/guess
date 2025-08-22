@@ -14,6 +14,7 @@
                 width: 100%;
                 height: 100vh;
                 font-size: 16px;
+                user-select: none;
             }
             a {
                 text-decoration: none;
@@ -87,10 +88,9 @@
             }
             .btns {
                 width: 100%;
-                height: 100%;
                 position: absolute;
-                left: 0;
-                top: 0;
+                top: 50%;
+                transform: translateY(-50%);
                 z-index: 11;
                 display: flex;
                 justify-content: space-between;
@@ -98,19 +98,20 @@
             }
             .btns button {
                 padding: 20px 30px;
-                font-size: 30px;
-                color: white;
                 box-sizing: border-box;
-                background-color: #00000030;
-                border: 3px solid rgba(255, 255, 255, 0.877);
-                border-radius: 10px;
+                background-color: transparent;
+                border: none;
                 cursor: pointer;
             }
             .btns button:first-of-type {
-                margin-left: 120px;
+                position: absolute;
+                z-index: 12;
+                left: 100px;
             }
             .btns button:nth-of-type(2) {
-                margin-right: 120px;
+                position: absolute;
+                z-index: 12;
+                right: 100px;
             }
             .imgBox {
                 width: 100%;
@@ -194,6 +195,40 @@
                 justify-content: center;
                 align-items: center;
             }
+            .feat {
+                position: absolute;
+                left: 52%;
+                transform: translateX(-50%);
+                bottom: 9%;
+                z-index: 20;
+                text-align: center;
+                padding: 2px;
+            }
+            .feat .play,
+            .feat .pause {
+                width: 40px;
+                height: 28px;
+                line-height: 28px;
+                position: absolute;
+                border-radius: 50px;
+                justify-content: center;
+                align-items: center;
+                display: none;
+            }
+            .pause {
+                gap: 4px;
+            }
+            .feat .play.on,
+            .feat .pause.on {
+                display: flex;
+            }
+
+            .pause span {
+                display: block;
+                width: 2px;
+                height: 20px;
+                background-color: #222222;
+            }
 
             .title {
                 font-size: 3.6rem;
@@ -220,6 +255,7 @@
                 background-color: rgb(91, 91, 143);
             }
         </style>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     </head>
     <body>
         <nav>
@@ -284,16 +320,28 @@
                     </div>
                 </div>
                 <div class="btns">
-                    <button onclick="prevImg()">&lt;</button>
-                    <button onclick="nextImg()">&gt;</button>
+                    <button onclick="prevImg()">
+                        <img src="./assets/images/main_arrow_left.svg" alt="이전버튼 아이콘" />
+                    </button>
+                    <button onclick="nextImg()">
+                        <img src="./assets/images/main_arrow_right.svg" alt="다음버튼 아이콘" />
+                    </button>
                 </div>
                 <div class="page"></div>
+                <div class="feat">
+                    <div class="play"><img src="./assets/images/main_arrow_right4.svg" alt="" /></div>
+                    <div class="pause on"><span></span><span></span></div>
+                </div>
             </div>
         </section>
         <script>
             const imgs = document.querySelectorAll('.imgs');
             let count = 0;
             let page = document.querySelector('.page');
+            const btns = document.querySelectorAll('.btns');
+            const play = document.querySelector('.play');
+            const pause = document.querySelector('.pause');
+            let isInterval = false;
 
             function show() {
                 imgs.forEach((item) => item.classList.remove('on'));
@@ -316,6 +364,26 @@
                 show();
             }
 
+            btns.forEach((item) => item.addEventListener('mouseover', () => clearInterval(intervalId)));
+            btns.forEach((item) => {
+                if (isInterval) {
+                    item.addEventListener('mouseleave', () => (intervalId = setInterval(nextImg, 4000)));
+                }
+            });
+
+            pause.addEventListener('click', () => {
+                pause.classList.remove('on');
+                play.classList.add('on');
+                isInterval = false;
+                clearInterval(intervalId);
+            });
+            play.addEventListener('click', () => {
+                play.classList.remove('on');
+                pause.classList.add('on');
+                intervalId = setInterval(nextImg, 4000);
+                isInterval = true;
+            });
+            let intervalId = setInterval(nextImg, 4000);
             window.addEventListener('load', show);
         </script>
     </body>
